@@ -8,7 +8,7 @@ pipeline {
 
             steps {
                 echo "Bulding application"
-                sh 'pip install -r requirements.txt'
+                sh 'docker build -t test-app:latest .'
             }
 
         }
@@ -17,11 +17,20 @@ pipeline {
 
             steps {
                 echo "Testing application"
-                sh "python -m unittest discover tests"
+                sh "docker run --rm test-app:latest python -m unittest discover tests"
             }
 
         }
 
+    }
+
+    post {
+        success {
+            echo "Pipeline completed successully."
+        }
+        failure {
+            echo "Pipeline failed."
+        }
     }
 
 }
