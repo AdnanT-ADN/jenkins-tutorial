@@ -9,6 +9,6 @@ pip install -r requirements.txt
 
 COPY ./greetings .
 COPY ./tests .
-COPY Jenkinsfile . 
+COPY ./Jenkinsfile . 
 
 CMD ["python", "main.py"]
