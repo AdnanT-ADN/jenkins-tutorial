@@ -8,6 +8,7 @@ pipeline {
 
             steps {
                 echo "Bulding application"
+                sh 'pip install -r requirements.txt'
             }
 
         }
@@ -16,6 +17,7 @@ pipeline {
 
             steps {
                 echo "Testing application"
+                sh "python -m unittest discover tests"
             }
 
         }
