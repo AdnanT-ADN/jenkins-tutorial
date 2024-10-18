@@ -1,35 +1,45 @@
 pipeline {
 
     agent any
+    
+    environment {
+        IMAGE_NAME = "jenkins-python-docker"
+        CONTAINER_NAME = "jenkins-python-container"
+    }
 
     stages {
-
-        stage("build") {
-
+        stage('Checkout') {
             steps {
-                echo "Bulding application"
-                sh 'docker build -t test-app:latest .'
+                // Checkout code from your Git repository
+                checkout scm
             }
-
+        }
+        
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    // Build the Docker image using the Dockerfile in the current directory
+                    sh 'docker build -t ${IMAGE_NAME} .'
+                }
+            }
         }
 
-        stage("test") {
-
+        stage('Test') {
             steps {
-                echo "Testing application"
-                sh "docker run --rm test-app:latest python -m unittest discover tests"
+                script {
+                    // Run the tests inside the Docker container
+                    sh '''
+                    docker run --name ${CONTAINER_NAME} ${IMAGE_NAME} sh -c "pytest tests/"
+                    '''
+                }
             }
-
         }
-
     }
 
     post {
-        success {
-            echo "Pipeline completed successully."
-        }
-        failure {
-            echo "Pipeline failed."
+        always {
+            // Cleanup: Remove the container after tests are complete
+            sh 'docker rm -f ${CONTAINER_NAME} || true'
         }
     }
 
