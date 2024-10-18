@@ -29,7 +29,7 @@ pipeline {
                 script {
                     // Run the tests inside the Docker container
                     sh '''
-                    docker run --name ${CONTAINER_NAME} ${IMAGE_NAME} sh -c "pytest tests/"
+                    docker run --name ${CONTAINER_NAME} ${IMAGE_NAME} sh -c "python -m unittest discover"
                     '''
                 }
             }
